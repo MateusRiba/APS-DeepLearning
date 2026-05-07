@@ -1,0 +1,7 @@
+# ignorar a pasta de dados pra não subir as imagens pesadas
+data/
+
+# lixos do python e jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
