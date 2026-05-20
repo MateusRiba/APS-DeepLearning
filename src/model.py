@@ -45,3 +45,30 @@ class CNN(nn.Module):
         x = self.fc2(x)
         
         return x
+    
+class CNN_Ablada(nn.Module):
+    # Rede sem regularização (Ablação de Dropout e BatchNorm)
+    def __init__(self, num_canais=1, num_classes=10):
+        super(CNN_Ablada, self).__init__()
+        
+        # Convoluções normais, mas sem o BatchNorm
+        self.conv1 = nn.Conv2d(in_channels=num_canais, out_channels=16, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3, padding=1)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        self.fc1 = nn.Linear(32 * 7 * 7, 128) 
+        # REMOVIDO: self.dropout = nn.Dropout(0.5) 
+        self.fc2 = nn.Linear(128, num_classes)
+
+    def forward(self, x):
+        # Sem BatchNorm, só Conv + ReLU + Pool
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        
+        x = torch.flatten(x, 1)
+        
+        x = F.relu(self.fc1(x))
+        # REMOVIDO: x = self.dropout(x) 
+        x = self.fc2(x)
+        
+        return x
